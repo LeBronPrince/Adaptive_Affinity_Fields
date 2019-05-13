@@ -1,0 +1,9 @@
+/inference
+/snapshot
+/snapshot_v3
+/snapshot_v2
+*.ckpt
+*.data-00000-of-00001
+*.index
+*.meta
+checkpoint
