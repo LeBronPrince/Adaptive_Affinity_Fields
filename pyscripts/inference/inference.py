@@ -42,7 +42,7 @@ def get_arguments():
                       help='Number of classes to predict.')
   parser.add_argument('--ignore-label', type=int, default=255,
                       help='Index of label to ignore.')
-  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_v2/model.ckpt-5250',
+  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_v3/model.ckpt-5250',
                       help='Where restore model parameters from.')
   parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_v3',
                       help='/path/to/save/predictions.')

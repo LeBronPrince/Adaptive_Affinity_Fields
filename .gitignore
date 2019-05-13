@@ -7,3 +7,11 @@
 *.index
 *.meta
 checkpoint
+train_myd.py
+train_gan.py
+train_d.py
+train_addtion_net.py
+loss_copy.py
+loss_new.py
+loss_totally.py
+learn.py
