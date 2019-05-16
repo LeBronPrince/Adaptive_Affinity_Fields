@@ -18,7 +18,7 @@ from seg_models.models.pspnet_v2_5 import pspnet_v2_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import network.common.layers as nn
 import general
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
@@ -80,7 +80,7 @@ def get_arguments():
 	             help='Save summaries and checkpoint every often.')
   parser.add_argument('--update-tb-every', type=int, default=20,
 	             help='Update summaries every often.')
-  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_v3',
+  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_mfll',
 	             help='Where to save snapshots of the model.')
   parser.add_argument('--not-restore-classifier', action='store_true',
 	             help='Whether to not restore classifier layers.')

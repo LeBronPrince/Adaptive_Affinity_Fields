@@ -15,10 +15,10 @@ sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/utils
 #from seg_models.models.pspnet import pspnet_resnet101 as model
 #from seg_models.models.pspnet_v2_1 import pspnet_v2_resnet101 as model
 #from seg_models.models.pspnet_v2_3 import pspnet_v2_resnet101 as model
-from seg_models.models.pspnet_v2_5 import pspnet_v2_resnet101 as model
+from seg_models.models.pspnet_v2_3 import pspnet_v2_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import general
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
@@ -42,7 +42,7 @@ def get_arguments():
                       help='Number of classes to predict.')
   parser.add_argument('--ignore-label', type=int, default=255,
                       help='Index of label to ignore.')
-  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_v3/model.ckpt-5250',
+  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_v3/model.ckpt-5000',
                       help='Where restore model parameters from.')
   parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_v3',
                       help='/path/to/save/predictions.')
@@ -110,7 +110,7 @@ def main():
       dtype=tf.float32)
 
   # Create network and output prediction.
-  outputs,outputs1 = model(crop_image_batch,
+  outputs = model(crop_image_batch,
                   args.num_classes,
                   False,
                   True)

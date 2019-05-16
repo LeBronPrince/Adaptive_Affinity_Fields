@@ -270,7 +270,7 @@ def resnet_v1_101(x,
                    filters=[64,128,256,512],
                    num_blocks=[3,4,23,3],
                    strides=[2,1,1,1],
-                   dilations=[None, None, 4, 2],
+                   dilations=[None, None, 2, 4],
                    is_training=is_training,
                    use_global_status=use_global_status,
                    reuse=reuse)

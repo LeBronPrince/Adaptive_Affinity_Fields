@@ -150,7 +150,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
 
         pool_out = nn.conv(pool_cat,name='block5/pool_out',filters=512*4,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        x = tf.concat([pool_out, res4, cab_out],name='block5/concat',axis=3)
+        x = tf.concat([pool_out, res4],name='block5/concat',axis=3)#cab_out
         #x = tf.concat([pool1, pool2, pool3, pool6, res4,cab_out],name='block5/concat',axis=3)
         x = nn.conv(x,
                 'block5/conv2',

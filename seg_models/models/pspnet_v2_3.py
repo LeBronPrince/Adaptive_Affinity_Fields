@@ -141,9 +141,28 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
         #pool_out = nn.conv(pool_cat,name='block5/pool_out',filters=512,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
         #            is_training=is_training,use_global_status=use_global_status)
         #x = tf.concat([pool_out, res4, cab_out],name='block5/concat',axis=3)
-        x = tf.concat([pool1, pool2, pool3, pool6, res4, cab_out],name='block5/concat',axis=3)
+        nonlocal1 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_1",scale=1)
+        nonlocal2 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_2",scale=2)
+        nonlocal3 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_3",scale=3)
+        nonlocal6 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_6",scale=6)
+        pool_cat = tf.concat([pool1, pool2, pool3, pool6, nonlocal1,nonlocal2,nonlocal3,nonlocal6],name='block5/concat',axis=3)
+        pool_out = nn.conv(pool_cat,name='block5/pool_out',filters=512*4,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
+        x = tf.concat([pool_out, res4,cab_out],name='block5/concat',axis=3)#cab_out
         x = nn.conv(x,
                 'block5/conv2',
+                512,
+                3,
+                1,
+                padding='SAME',
+                biased=False,
+                bn=True,
+                relu=True,
+                is_training=is_training,
+                decay=0.99,
+                use_global_status=use_global_status)
+        x = nn.conv(x,
+                'block5/conv3',
                 512,
                 3,
                 1,

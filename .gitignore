@@ -1,7 +1,8 @@
 /inference
 /snapshot
-/snapshot_v3
-/snapshot_v2
+/snapshot_all
+/snapshot_mfll
+/snapshot_decoder
 *.ckpt
 *.data-00000-of-00001
 *.index
