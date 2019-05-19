@@ -57,6 +57,34 @@ def x_calc_lucorners(im, patch_size, overlap_size=[0, 0]):
         cur_y = 0
     return [l_x, l_y]
 
+def x_calc_lucorners1(im, patch_size, overlap_size=[0, 0]):
+    '''
+    :param im:
+    :param patch_size:
+    :param overlap_size: [0, Patchsize[*]] indicating how much is the overlaping
+    :param boarderflag: is the flag marking the way to deal with the boarder
+        - set 1(default): to discard the residual pixels
+        - set 2 : to reflect along the boarder
+    :return:
+        corners: a list including the corner coordinates [x,y]
+    '''
+    im_arr = np.array(im)
+    # shape is always height first
+    (im_height, im_width) = (im_arr.shape[0], im_arr.shape[1])
+    l_x = []
+    l_y = []
+    cur_x = 0
+    cur_y = 0
+    while cur_x  < im_height:
+        while cur_y < im_width:
+            l_x.append(cur_x)
+            l_y.append(cur_y)
+
+            cur_y = cur_y + patch_size[1] - overlap_size[1]
+
+        cur_x = cur_x + patch_size[0] - overlap_size[0]
+        cur_y = 0
+    return [l_x, l_y]
 
 def x_one_split(l_cor, patch_size, origin_image):
     '''
@@ -70,6 +98,8 @@ def x_one_split(l_cor, patch_size, origin_image):
     box = (l_cor[1], l_cor[0], l_cor[1]+patch_size[1], l_cor[0]+patch_size[0])
     c_im = origin_image.crop(box)
     return c_im
+
+
 
 
 def x_image_split(l_corners, patch_size, origin_image, root_name):

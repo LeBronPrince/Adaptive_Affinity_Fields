@@ -176,6 +176,7 @@ def resnet_v1(x,
                 relu=True,
                 is_training=is_training,
                 use_global_status=use_global_status)
+    res5 = x
 
     # Build pool1.
     x = nn.max_pool(x,
@@ -241,7 +242,7 @@ def resnet_v1(x,
                        is_training=is_training,
                        use_global_status=use_global_status)
                        """
-    return res0,res1,res2,res3,res4
+    return res0,res1,res2,res3,res4,res5
 
 
 def resnet_v1_101(x,

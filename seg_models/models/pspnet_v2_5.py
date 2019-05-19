@@ -25,9 +25,14 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
     assert(h%48 == 0 and w%48 == 0 and h == w)
 
     # Build the base network.
-    res0,res1,res2,res3,res4 = pspnet_builder(x, name,is_training=is_training, use_global_status=use_global_status, reuse=reuse)
+    res0,res1,res2,res3,res4,res5 = pspnet_builder(x, name,is_training=is_training, use_global_status=use_global_status, reuse=reuse)
 
     with tf.variable_scope('struct_multi', reuse=reuse) as scope:
+
+        cab5 = cab(res5,'res5',is_training,use_global_status)
+        cab5_deconv = nn.conv(cab5,name='cab5_deconv',filters=128,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
+
         cab0 = cab(res0,'res0',is_training,use_global_status)
         cab0_conv = nn.conv(cab0,name='cab0_conv',filters=256,kernel_size=3,strides=2,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
@@ -236,7 +241,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 is_training=is_training,
                 decay=0.99,
                 use_global_status=use_global_status)
-        x = nn.conv(x,
+        out2 = nn.conv(x,
                 'block5/fc1_voc12',
                 num_classes,
                 1,
@@ -246,8 +251,46 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 bn=False,
                 relu=False,
                 is_training=is_training)
+        x = tf.image.resize_bilinear(x, [int(h/2), int(w/2)])
+        x = tf.concat([x, cab5_deconv],
+                  name='block5/concat3',
+                  axis=3)
+        x = nn.conv(x,
+                'block5/conv16',
+                512,
+                3,
+                1,
+                padding='SAME',
+                biased=False,
+                bn=True,
+                relu=True,
+                is_training=is_training,
+                decay=0.99,
+                use_global_status=use_global_status)
+        x = nn.conv(x,
+                'block5/conv14',
+                512,
+                3,
+                1,
+                padding='SAME',
+                biased=False,
+                bn=True,
+                relu=True,
+                is_training=is_training,
+                decay=0.99,
+                use_global_status=use_global_status)
+        x = nn.conv(x,
+                'block5/fc1_voc112',
+                num_classes,
+                1,
+                1,
+                padding='SAME',
+                biased=True,
+                bn=False,
+                relu=False,
+                is_training=is_training)
 
-    return x,out1
+    return x,out2,out1
 
 def pspnet_v2_resnet101(x,
                      num_classes,
@@ -277,8 +320,9 @@ def pspnet_v2_resnet101(x,
 
   scores = []
   scores1 = []
+  scores2 = []
   with tf.name_scope('scale_0') as scope:
-    score,score1 = pspnet_v2(
+    score,score1,score2 = pspnet_v2(
         x,
         'resnet_v1_101',
         num_classes,
@@ -288,5 +332,5 @@ def pspnet_v2_resnet101(x,
 
     scores.append(score)
     scores1.append(score1)
-
-  return scores,scores1
+    scores2.append(score2)
+  return scores,scores1,scores2
