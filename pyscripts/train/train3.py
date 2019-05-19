@@ -23,7 +23,7 @@ IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
 def get_arguments():
-  """Parse all the arguments provided from the CLI.
+  """
 
   Returns:
     A list of parsed arguments.
