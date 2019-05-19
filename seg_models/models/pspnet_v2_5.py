@@ -37,14 +37,18 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
         cab1 = cab(res1,'res1',is_training,use_global_status)
         cab1_conv = nn.conv(cab1,name='cab1_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        cab1_deconv = nn.conv(cab1,name='cab1_deconv',filters=128,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        cab1_deconv = nn.conv(cab1,name='cab1_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
 
         cab2 = cab(res2,'res2',is_training,use_global_status)
         cab2_conv = nn.conv(cab2,name='cab2_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
+        cab2_deconv = nn.conv(cab1,name='cab2_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
         cab3 = cab(res3,'res3',is_training,use_global_status)
         cab3_conv = nn.conv(cab3,name='cab3_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
+        cab3_deconv = nn.conv(cab1,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
         cab4 = cab(res4,'res4',is_training,use_global_status)
         cab4_conv = nn.conv(cab4,name='cab4_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
@@ -187,7 +191,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 relu=False,
                 is_training=is_training)
 
-        x = tf.concat([x, cab1_deconv],
+        x = tf.concat([x, cab1_deconv,cab2_deconv,cab3_deconv],
                   name='block5/concat1',
                   axis=3)
         x = nn.conv(x,

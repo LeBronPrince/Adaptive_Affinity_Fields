@@ -2,11 +2,15 @@
 /snapshot
 /snapshot_all
 /snapshot_mfll
-/snapshot_decoder
+/snapshot_without_decoder
+/snapshot_deeplab
+/snapshot_v3
+/snapshot_*
 *.ckpt
 *.data-00000-of-00001
 *.index
 *.meta
+*.f523-desktop56
 checkpoint
 train_myd.py
 train_gan.py

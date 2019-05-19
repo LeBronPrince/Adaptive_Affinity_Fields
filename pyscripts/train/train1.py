@@ -18,7 +18,7 @@ from seg_models.models.deeplab import deeplab_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import network.common.layers as nn
 import general
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
@@ -271,7 +271,7 @@ def main():
   sess.run(init_local)
 
   # Saver for storing checkpoints of the model.
-  saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=10)
+  saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=0)
 
   # Load variables if the checkpoint is provided.
   if args.restore_from is not None:
