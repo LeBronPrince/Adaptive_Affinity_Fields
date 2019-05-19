@@ -19,7 +19,7 @@ sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/utils
 from seg_models.models.pspnet_v2_5 import pspnet_v2_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import general
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
@@ -33,7 +33,7 @@ def get_arguments():
       description='Inference for Semantic Segmentation')
   parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/test/',
                       help='/path/to/dataset.')
-  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_test.txt',
+  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_11.txt',
                       help='/path/to/datalist/file.')
   parser.add_argument('--input-size', type=str, default='336,336',
                       help='Comma-separated string with H and W of image.')
@@ -43,9 +43,9 @@ def get_arguments():
                       help='Number of classes to predict.')
   parser.add_argument('--ignore-label', type=int, default=255,
                       help='Index of label to ignore.')
-  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_fcn/model.ckpt-4750',
+  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_final/model.ckpt-6000',
                       help='Where restore model parameters from.')
-  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_fcn',
+  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_final',
                       help='/path/to/save/predictions.')
   parser.add_argument('--colormap', type=str, default=None,
                       help='/path/to/colormap/file.')
@@ -111,7 +111,7 @@ def main():
       dtype=tf.float32)
 
   # Create network and output prediction.
-  outputs = model(crop_image_batch,#outputs1
+  outputs,outputs1 = model(crop_image_batch,#outputs1
                   args.num_classes,
                   False,
                   True)
