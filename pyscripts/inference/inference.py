@@ -33,7 +33,7 @@ def get_arguments():
       description='Inference for Semantic Segmentation')
   parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/test/',
                       help='/path/to/dataset.')
-  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_11.txt',
+  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_test.txt',
                       help='/path/to/datalist/file.')
   parser.add_argument('--input-size', type=str, default='336,336',
                       help='Comma-separated string with H and W of image.')

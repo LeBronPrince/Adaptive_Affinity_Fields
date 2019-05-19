@@ -13,7 +13,7 @@ sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/")
 sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/utils")
 #from seg_models.models.pspnet_v2 import pspnet_v2_resnet101 as model
 #from seg_models.models.pspnet_v2_1 import pspnet_v2_resnet101 as model
-from seg_models.models.pspnet_v2_5 import pspnet_v2_resnet101 as model
+from seg_models.models.pspnet_v2_7 import pspnet_v2_resnet101 as model
 #from seg_models.models.pspnet import pspnet_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import network.common.layers as nn
@@ -80,7 +80,7 @@ def get_arguments():
 	             help='Save summaries and checkpoint every often.')
   parser.add_argument('--update-tb-every', type=int, default=20,
 	             help='Update summaries every often.')
-  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_final',
+  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_x2',
 	             help='Where to save snapshots of the model.')
   parser.add_argument('--not-restore-classifier', action='store_true',
 	             help='Whether to not restore classifier layers.')
@@ -129,9 +129,9 @@ def main():
   # The segmentation network is stride 8 by default.
   h, w = map(int, args.input_size.split(','))
   input_size = (h, w)
-  innet_size = (int(math.ceil(h/4)), int(math.ceil(w/4)))
-  innet_size1 = (int(math.ceil(h/8)), int(math.ceil(w/8)))
-
+  innet_size = (int(math.ceil(h/2)), int(math.ceil(w/2)))
+  innet_size1 = (int(math.ceil(h/4)), int(math.ceil(w/4)))
+  innet_size2 = (int(math.ceil(h/8)), int(math.ceil(w/8)))
   # Initialize the random seed.
   tf.set_random_seed(args.random_seed)
 
@@ -179,10 +179,18 @@ def main():
   # Extract the indices of pixel where the gradients are propogated.
   pixel_inds1 = tf.squeeze(tf.where(not_ignore_pixel1), 1)
 
+  labels2 = tf.image.resize_nearest_neighbor(
+      label_batch, innet_size2, name='label_shrink2')
+  labels_flat2 = tf.reshape(labels2, [-1,])
 
+  # Ignore the location where the label value is larger than args.num_classes.
+  not_ignore_pixel2 = tf.less_equal(labels_flat2, args.num_classes-1)
+
+  # Extract the indices of pixel where the gradients are propogated.
+  pixel_inds2 = tf.squeeze(tf.where(not_ignore_pixel2), 1)
 
   # Create network and predictions.
-  outputs,outputs1 = model(image_batch,
+  outputs,outputs1,outputs2 = model(image_batch,
                   args.num_classes,
                   args.is_training,
                   args.use_global_status)
@@ -194,10 +202,10 @@ def main():
   # Define softmax loss.
   labels_gather = tf.to_int32(tf.gather(labels_flat, pixel_inds))
   labels_gather1 = tf.to_int32(tf.gather(labels_flat1, pixel_inds1))
-
+  labels_gather2 = tf.to_int32(tf.gather(labels_flat2, pixel_inds2))
   seg_losses = []
   seg_losses1 = []
-
+  seg_losses2 = []
   for i,output in enumerate(outputs):
     output_2d = tf.reshape(output, [-1, args.num_classes])
     output_gather = tf.gather(output_2d, pixel_inds)
@@ -210,7 +218,12 @@ def main():
     #loss,inter_class_loss = loss_total(output_gather,labels_gather)
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=output_gather1, labels=labels_gather1)
     seg_losses1.append(loss)
-
+  for i,output2 in enumerate(outputs2):
+    output_2d2 = tf.reshape(output2, [-1, args.num_classes])
+    output_gather2 = tf.gather(output_2d2, pixel_inds2)
+    #loss,inter_class_loss = loss_total(output_gather,labels_gather)
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=output_gather2, labels=labels_gather2)
+    seg_losses2.append(loss)
 
   # Define weight regularization loss.
   w = args.weight_decay
@@ -220,8 +233,9 @@ def main():
   # Sum all loss terms.
   mean_seg_loss = tf.reduce_mean(seg_losses)
   mean_seg_loss1 = tf.reduce_mean(seg_losses1)
+  mean_seg_loss2 = tf.reduce_mean(seg_losses2)
   mean_l2_loss = tf.reduce_mean(l2_losses)
-  reduced_loss = mean_seg_loss + mean_l2_loss +mean_seg_loss1
+  reduced_loss = mean_seg_loss + mean_l2_loss +mean_seg_loss1+ mean_seg_loss2
 
 
   # Grab variable names which are used for training.
