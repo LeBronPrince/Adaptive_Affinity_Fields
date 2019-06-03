@@ -2,9 +2,9 @@ import numpy as np
 import os
 import cv2
 import math
-datapath = '/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_final/color'
-im_path = '/home/f523/wangyang/segmentation/Vaihingen/ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE/top_mosaic_09cm_area11.tif'
-patch_size = 336
+datapath = '/home/wangyang/Desktop/dataset/Vaihingen/Split/test/28/inference_psp_28/color'
+im_path = '/home/wangyang/Desktop/dataset/Vaihingen/ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE/top_mosaic_09cm_area28.tif'
+patch_size = 256
 im = cv2.imread(im_path)
 im = np.array(im)
 print(im.shape)
@@ -21,7 +21,8 @@ output = np.zeros(shape)
 output1 = np.zeros(shape1)
 data = []
 files = os.listdir(datapath)
-files.sort(key=lambda x:int(x[-7:-4]))
+print(files[1][-8:-5])
+files.sort(key=lambda x:x[-8:-5])
 
 for file in files:
     path = os.path.join(datapath,file)
@@ -42,7 +43,7 @@ for i in range(num):
     w += 1
 
 print("process splice image sucessfully")
-save_path = "/home/f523/wangyang/segmentation/Vaihingen/Split/test/original_11/VH_11.jpg"
+save_path = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/28/inference_psp_28/color/VH_28_psp.jpg"
 output1 = output[:im_h,:im_w,:]
 print(output1.shape)
 cv2.imwrite(save_path,output1)

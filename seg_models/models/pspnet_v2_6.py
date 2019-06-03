@@ -1,6 +1,6 @@
 import tensorflow as tf
 import sys
-sys.path.append("/media/f523/7cf72e9a-af1d-418e-b1f1-94d2a5e0f0d5/f523/wangyang/Adaptive_Affinity_Fields")
+sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields")
 import network.common.layers as nn
 from network.common.resnet_v1_1 import resnet_v1_101 as pspnet_builder
 from network.common.pymaid import nonlocal_dot
@@ -28,6 +28,8 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
     res0,res1,res2,res3,res4 = pspnet_builder(x, name,is_training=is_training, use_global_status=use_global_status, reuse=reuse)
 
     with tf.variable_scope('struct_multi', reuse=reuse) as scope:
+
+
         cab0 = cab(res0,'res0',is_training,use_global_status)
         cab0_conv = nn.conv(cab0,name='cab0_conv',filters=256,kernel_size=3,strides=2,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
@@ -43,8 +45,12 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
         cab2 = cab(res2,'res2',is_training,use_global_status)
         cab2_conv = nn.conv(cab2,name='cab2_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
+        cab2_deconv = nn.conv(cab2,name='cab2_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
         cab3 = cab(res3,'res3',is_training,use_global_status)
         cab3_conv = nn.conv(cab3,name='cab3_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
+        cab3_deconv = nn.conv(cab3,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
         cab4 = cab(res4,'res4',is_training,use_global_status)
         cab4_conv = nn.conv(cab4,name='cab4_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
@@ -60,7 +66,84 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
         pool_k = int(h/8) # the base network is stride 8 by default.
 
     # Build pooling layer results in 1x1 output.
+        pool1 = tf.nn.avg_pool(res4,
+                           name='block5/pool1',
+                           ksize=[1,pool_k,pool_k,1],
+                           strides=[1,pool_k,pool_k,1],
+                           padding='VALID')
+        pool1 = nn.conv(pool1,
+                    'block5/pool1/conv1',
+                    512,
+                    1,
+                    1,
+                    padding='SAME',
+                    biased=False,
+                    bn=True,
+                    relu=True,
+                    is_training=is_training,
+                    decay=0.99,
+                    use_global_status=use_global_status)
+        pool1 = tf.image.resize_bilinear(pool1, [pool_k, pool_k])
 
+    # Build pooling layer results in 2x2 output.
+        pool2 = tf.nn.avg_pool(res4,
+                           name='block5/pool2',
+                           ksize=[1,pool_k//2,pool_k//2,1],
+                           strides=[1,pool_k//2,pool_k//2,1],
+                           padding='VALID')
+        pool2 = nn.conv(pool2,
+                    'block5/pool2/conv1',
+                    512,
+                    1,
+                    1,
+                    padding='SAME',
+                    biased=False,
+                    bn=True,
+                    relu=True,
+                    is_training=is_training,
+                    decay=0.99,
+                    use_global_status=use_global_status)
+        pool2 = tf.image.resize_bilinear(pool2, [pool_k, pool_k])
+
+    # Build pooling layer results in 3x3 output.
+        pool3 = tf.nn.avg_pool(res4,
+                           name='block5/pool3',
+                           ksize=[1,pool_k//3,pool_k//3,1],
+                           strides=[1,pool_k//3,pool_k//3,1],
+                           padding='VALID')
+        pool3 = nn.conv(pool3,
+                    'block5/pool3/conv1',
+                    512,
+                    1,
+                    1,
+                    padding='SAME',
+                    biased=False,
+                    bn=True,
+                    relu=True,
+                    is_training=is_training,
+                    decay=0.99,
+                    use_global_status=use_global_status)
+        pool3 = tf.image.resize_bilinear(pool3, [pool_k, pool_k])
+
+    # Build pooling layer results in 6x6 output.
+        pool6 = tf.nn.avg_pool(res4,
+                           name='block5/pool6',
+                           ksize=[1,pool_k//6,pool_k//6,1],
+                           strides=[1,pool_k//6,pool_k//6,1],
+                           padding='VALID')
+        pool6 = nn.conv(pool6,
+                    'block5/pool6/conv1',
+                    512,
+                    1,
+                    1,
+                    padding='SAME',
+                    biased=False,
+                    bn=True,
+                    relu=True,
+                    is_training=is_training,
+                    decay=0.99,
+                    use_global_status=use_global_status)
+        pool6 = tf.image.resize_bilinear(pool6, [pool_k, pool_k])
         nonlocal1 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_1",scale=1)
         nonlocal2 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_2",scale=2)
         nonlocal3 = nonlocal_dot(res4, 512, embed=True, softmax=True, scope="nonlocal/scale_3",scale=3)
@@ -69,14 +152,11 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
     # segmentation prediction.
 
 
-        pool_cat = tf.concat([nonlocal3, nonlocal1, nonlocal2, nonlocal6],axis=3)
+        pool_cat = tf.concat([pool1, pool2, pool3, pool6,nonlocal1,nonlocal2,nonlocal3,nonlocal6],axis=3)
 
-        pool_out = nn.conv(pool_cat,name='block5/pool_out',filters=512,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+        pool_out = nn.conv(pool_cat,name='block5/pool_out',filters=512*4,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        x = tf.concat([pool_out, res4, cab_out],
-                  name='block5/concat',
-                  axis=3)
-        #x = tf.concat([pool1, pool2, pool3, pool6, res4,cab_out],name='block5/concat',axis=3)
+        x = tf.concat([pool_out, res4],name='block5/concat',axis=3)#cab_out
         x = nn.conv(x,
                 'block5/conv2',
                 512,
@@ -91,7 +171,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 use_global_status=use_global_status)#cab1_deconv
         out1 = nn.conv(x,
                 'block5/conv5',
-                512,#512
+                512,
                 3,
                 1,
                 padding='SAME',
@@ -129,8 +209,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
               use_global_status=use_global_status)
 
 
-        #x = tf.image.resize_bilinear(x, [int(h/4), int(w/4)])
-        x = tf.layers.conv2d_transpose(x,512,3,strides=(2, 2), padding="SAME",name="block5/transpose")
+        x = tf.image.resize_bilinear(x, [int(h/4), int(w/4)])
         x = tf.concat([x, cab0_deconv],
                   name='block5/concat2',
                   axis=3)
@@ -148,7 +227,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 use_global_status=use_global_status)
         x = nn.conv(x,
                 'block5/conv4',
-                512,#512
+                512,
                 3,
                 1,
                 padding='SAME',
@@ -168,6 +247,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 bn=False,
                 relu=False,
                 is_training=is_training)
+
 
     return x,out1
 
@@ -199,6 +279,7 @@ def pspnet_v2_resnet101(x,
 
   scores = []
   scores1 = []
+
   with tf.name_scope('scale_0') as scope:
     score,score1 = pspnet_v2(
         x,

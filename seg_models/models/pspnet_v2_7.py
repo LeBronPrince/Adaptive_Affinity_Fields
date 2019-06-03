@@ -30,39 +30,39 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
     with tf.variable_scope('struct_multi', reuse=reuse) as scope:
 
         cab5 = cab(res5,'res5',is_training,use_global_status)
-        cab5_deconv = nn.conv(cab5,name='cab5_deconv',filters=128,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+        cab5_deconv = nn.conv(cab5,name='cab5_deconv',filters=96,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
 
         cab0 = cab(res0,'res0',is_training,use_global_status)
-        cab0_conv = nn.conv(cab0,name='cab0_conv',filters=256,kernel_size=3,strides=2,padding='VALID',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-        cab0_deconv = nn.conv(cab0,name='cab0_deconv',filters=128,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+        #cab0_conv = nn.conv(cab0,name='cab0_conv',filters=256,kernel_size=3,strides=2,padding='VALID',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+        cab0_deconv = nn.conv(cab0,name='cab0_deconv',filters=96,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
 
         cab1 = cab(res1,'res1',is_training,use_global_status)
-        cab1_conv = nn.conv(cab1,name='cab1_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-        cab1_deconv = nn.conv(cab1,name='cab1_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-
-        cab2 = cab(res2,'res2',is_training,use_global_status)
-        cab2_conv = nn.conv(cab2,name='cab2_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-        cab2_deconv = nn.conv(cab1,name='cab2_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-        cab3 = cab(res3,'res3',is_training,use_global_status)
-        cab3_conv = nn.conv(cab3,name='cab3_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-        cab3_deconv = nn.conv(cab1,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
-        cab4 = cab(res4,'res4',is_training,use_global_status)
-        cab4_conv = nn.conv(cab4,name='cab4_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #cab1_conv = nn.conv(cab1,name='cab1_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+        cab1_deconv = nn.conv(cab1,name='cab1_deconv',filters=96,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
 
-        cab_cat = tf.concat([cab0_conv,cab1_conv,cab2_conv,cab3_conv,cab4_conv],axis=3)
+        #cab2 = cab(res2,'res2',is_training,use_global_status)
+        #cab2_conv = nn.conv(cab2,name='cab2_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+        #cab2_deconv = nn.conv(cab1,name='cab2_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+        #cab3 = cab(res3,'res3',is_training,use_global_status)
+        #cab3_conv = nn.conv(cab3,name='cab3_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+        #cab3_deconv = nn.conv(cab1,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+        #cab4 = cab(res4,'res4',is_training,use_global_status)
+        #cab4_conv = nn.conv(cab4,name='cab4_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
 
-        cab_out = nn.conv(cab_cat,name='cab_out',filters=512,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
+        #cab_cat = tf.concat([cab0_conv,cab1_conv,cab2_conv,cab3_conv,cab4_conv],axis=3)
+
+        #cab_out = nn.conv(cab_cat,name='cab_out',filters=512,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
 
     with tf.variable_scope(name, reuse=reuse) as scope:
     # Build the PSP module
@@ -196,7 +196,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 relu=False,
                 is_training=is_training)
 
-        x = tf.concat([x, cab1_deconv,cab2_deconv,cab3_deconv],
+        x = tf.concat([x, cab1_deconv],
                   name='block5/concat1',
                   axis=3)
         x = nn.conv(x,

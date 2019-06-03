@@ -80,7 +80,7 @@ def get_arguments():
 	             help='Save summaries and checkpoint every often.')
   parser.add_argument('--update-tb-every', type=int, default=20,
 	             help='Update summaries every often.')
-  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_final',
+  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_v5',
 	             help='Where to save snapshots of the model.')
   parser.add_argument('--not-restore-classifier', action='store_true',
 	             help='Whether to not restore classifier layers.')

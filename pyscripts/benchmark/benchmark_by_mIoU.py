@@ -6,12 +6,12 @@ import numpy as np
 import sys
 sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/")
 from utils.metrics import iou_stats
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 parser = argparse.ArgumentParser(
   description='Benchmark segmentation predictions'
 )
-parser.add_argument('--pred-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_final/gray',
+parser.add_argument('--pred-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_fcn/gray',
                     help='/path/to/prediction.')
 parser.add_argument('--gt-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/test/label_test',
                     help='/path/to/ground-truths')

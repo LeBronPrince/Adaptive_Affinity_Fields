@@ -1,13 +1,17 @@
 # -- coding: utf-8 --
 import tensorflow as tf
 import numpy as np
-path = '/home/wangyang/Desktop/dataset/potsdam/Split/original/PD_00_00000.png'
-img = tf.read_file(path)
-img1 = tf.image.decode_png(img,channels=3)
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    a = img1.eval()
-    print(np.array(a))
+y_true = [1,2,2,1]
+y_pred = [2,2,2,2]
+#y_true = tf.one_hot(y_true,3,dtype=tf.int32)
+pt_1 = tf.where(tf.equal(y_true, 1), y_pred, tf.ones_like(y_pred))
+sess = tf.Session()
+e = sess.run(pt_1)
+print(e)
+
+
+
+
 
 """
 a = np.array([[1,2,3],[4,5,6]])

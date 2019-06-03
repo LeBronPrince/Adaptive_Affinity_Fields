@@ -11,10 +11,10 @@ from tqdm import tqdm
 import sys
 sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/")
 sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/utils")
-#from seg_models.models.pspnet_v2 import pspnet_v2_resnet101 as model
+from seg_models.models.pspnet import pspnet_resnet101 as model
 #from seg_models.models.fcn import fcn8s_resnet101 as model
 #from seg_models.models.pspnet_v2_3 import pspnet_v2_resnet101 as model
-from seg_models.models.deeplab import deeplab_resnet101 as model
+#from seg_models.models.deeplab import deeplab_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import network.common.layers as nn
 import general
@@ -76,11 +76,11 @@ def get_arguments():
  # Misc paramters
   parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/resnet_v1_101.ckpt',#
 	             help='Where restore model parameters from.')
-  parser.add_argument('--save-pred-every', type=int, default=250,
+  parser.add_argument('--save-pred-every', type=int, default=500,
 	             help='Save summaries and checkpoint every often.')
   parser.add_argument('--update-tb-every', type=int, default=20,
 	             help='Update summaries every often.')
-  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot_deeplab',
+  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_psp',
 	             help='Where to save snapshots of the model.')
   parser.add_argument('--not-restore-classifier', action='store_true',
 	             help='Whether to not restore classifier layers.')

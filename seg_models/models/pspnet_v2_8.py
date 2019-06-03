@@ -2,7 +2,7 @@ import tensorflow as tf
 import sys
 sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields")
 import network.common.layers as nn
-from network.common.resnet_v1_1 import resnet_v1_101 as pspnet_builder
+from network.common.resnet_v1_3 import resnet_v1_101 as pspnet_builder
 from network.common.pymaid import nonlocal_dot
 def cab(batch_input,name,is_training,use_global_status):
     with tf.variable_scope(name) as scope:
@@ -33,37 +33,41 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
         cab0 = cab(res0,'res0',is_training,use_global_status)
         cab0_conv = nn.conv(cab0,name='cab0_conv',filters=256,kernel_size=3,strides=2,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        cab0_deconv = nn.conv(cab0,name='cab0_deconv',filters=128,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+        cab0_deconv = nn.conv(res0,name='cab0_deconv',filters=128,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
 
         cab1 = cab(res1,'res1',is_training,use_global_status)
-        cab1_conv = nn.conv(cab1,name='cab1_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        cab1_conv = nn.conv(cab1,name='cab1_conv',filters=256,kernel_size=3,strides=2,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        cab1_deconv = nn.conv(cab1,name='cab1_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        cab1_deconv = nn.conv(cab1,name='cab1_deconv',filters=128,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
 
         cab2 = cab(res2,'res2',is_training,use_global_status)
         cab2_conv = nn.conv(cab2,name='cab2_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        cab2_deconv = nn.conv(cab1,name='cab2_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
+        #cab2_deconv = nn.conv(cab2,name='cab2_deconv',filters=128,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+
         cab3 = cab(res3,'res3',is_training,use_global_status)
         cab3_conv = nn.conv(cab3,name='cab3_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        cab3_deconv = nn.conv(cab1,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)
+        #cab3_deconv = nn.conv(cab3,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
+
         cab4 = cab(res4,'res4',is_training,use_global_status)
         cab4_conv = nn.conv(cab4,name='cab4_conv',filters=256,kernel_size=3,strides=1,padding='SAME',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
+        #cab4_deconv = nn.conv(cab4,name='cab3_deconv',filters=64,kernel_size=1,strides=1,padding='SAME',biased=False,bn=True,relu=True,
+        #            is_training=is_training,use_global_status=use_global_status)
 
-        cab_cat = tf.concat([cab0_conv,cab1_conv,cab2_conv,cab3_conv,cab4_conv],axis=3)
+        cab_cat = tf.concat([cab1_conv,cab2_conv,cab3_conv,cab4_conv],axis=3)
 
-        cab_out = nn.conv(cab_cat,name='cab_out',filters=256,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
-                    is_training=is_training,use_global_status=use_global_status)# original 512
+        cab_out = nn.conv(cab_cat,name='cab_out',filters=512,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
+                    is_training=is_training,use_global_status=use_global_status)
 
     with tf.variable_scope(name, reuse=reuse) as scope:
     # Build the PSP module
-        pool_k = int(h/8) # the base network is stride 8 by default.
+        pool_k = int(h/16) # the base network is stride 8 by default.
 
     # Build pooling layer results in 1x1 output.
         pool1 = tf.nn.avg_pool(res4,
@@ -156,9 +160,9 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
 
         pool_out = nn.conv(pool_cat,name='block5/pool_out',filters=512*4,kernel_size=1,strides=1,padding='VALID',biased=False,bn=True,relu=True,
                     is_training=is_training,use_global_status=use_global_status)
-        x = tf.concat([pool_out, res4,cab_out],name='block5/concat',axis=3)#cab_out
+        x = tf.concat([pool_out, res4],name='block5/concat',axis=3)#cab_out
         x = nn.conv(x,
-                'block5/conv2',
+                'block5/conv1',
                 512,
                 3,
                 1,
@@ -170,7 +174,7 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 decay=0.99,
                 use_global_status=use_global_status)#cab1_deconv
         out1 = nn.conv(x,
-                'block5/conv5',
+                'block5/conv2',
                 512,
                 3,
                 1,
@@ -192,9 +196,9 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 relu=False,
                 is_training=is_training)
 
-        x = tf.concat([x, cab1_deconv,cab2_deconv,cab3_deconv],
-                  name='block5/concat1',
-                  axis=3)
+        #x = tf.concat([x,cab4_deconv,cab3_deconv],
+        #          name='block5/concat1',
+        #          axis=3)
         x = nn.conv(x,
               'block5/conv3',
               512,
@@ -209,12 +213,12 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
               use_global_status=use_global_status)
 
 
-        x = tf.image.resize_bilinear(x, [int(h/4), int(w/4)])
-        x = tf.concat([x, cab0_deconv],
+        x = tf.image.resize_bilinear(x, [int(h/8), int(w/8)])
+        x = tf.concat([x, cab1_deconv],
                   name='block5/concat2',
                   axis=3)
         x = nn.conv(x,
-                'block5/conv6',
+                'block5/conv4',
                 512,
                 3,
                 1,
@@ -225,8 +229,24 @@ def pspnet_v2(x,name,num_classes,is_training,use_global_status,reuse=False):
                 is_training=is_training,
                 decay=0.99,
                 use_global_status=use_global_status)
+        x = tf.image.resize_bilinear(x, [int(h/4), int(w/4)])
         x = nn.conv(x,
-                'block5/conv4',
+                'block5/conv5',
+                512,
+                3,
+                1,
+                padding='SAME',
+                biased=False,
+                bn=True,
+                relu=True,
+                is_training=is_training,
+                decay=0.99,
+                use_global_status=use_global_status)
+        x = tf.concat([x, cab0_deconv],
+                  name='block5/concat3',
+                  axis=3)
+        x = nn.conv(x,
+                'block5/conv6',
                 512,
                 3,
                 1,

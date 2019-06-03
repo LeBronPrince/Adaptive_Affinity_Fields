@@ -16,10 +16,11 @@ sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/utils
 #from seg_models.models.pspnet_v2_1 import pspnet_v2_resnet101 as model
 #from seg_models.models.pspnet_v2_3 import pspnet_v2_resnet101 as model
 #from seg_models.models.fcn import fcn8s_resnet101 as model
-from seg_models.models.pspnet_v2_5 import pspnet_v2_resnet101 as model
+from seg_models.models.pspnet_v2_9 import pspnet_v2_resnet101 as model
+#from seg_models.models.pspnet import pspnet_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import general
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
@@ -31,9 +32,9 @@ def get_arguments():
   """
   parser = argparse.ArgumentParser(
       description='Inference for Semantic Segmentation')
-  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/test/',
+  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/potsdam/Split/test/',
                       help='/path/to/dataset.')
-  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_test.txt',
+  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/potsdam/potsdam_test.txt',
                       help='/path/to/datalist/file.')
   parser.add_argument('--input-size', type=str, default='336,336',
                       help='Comma-separated string with H and W of image.')
@@ -42,10 +43,10 @@ def get_arguments():
   parser.add_argument('--num-classes', type=int, default=6,
                       help='Number of classes to predict.')
   parser.add_argument('--ignore-label', type=int, default=255,
-                      help='Index of label to ignore.')
-  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_final/model.ckpt-6000',
+                      help='Index of label to ignore.')#/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_v9/model.ckpt-6500
+  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_potsdam_v9/model.ckpt-12000',
                       help='Where restore model parameters from.')
-  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_final',
+  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_potsdam_v9',
                       help='/path/to/save/predictions.')
   parser.add_argument('--colormap', type=str, default=None,
                       help='/path/to/colormap/file.')
@@ -111,7 +112,7 @@ def main():
       dtype=tf.float32)
 
   # Create network and output prediction.
-  outputs,outputs1 = model(crop_image_batch,#outputs1
+  outputs,outputs1,outputs2 = model(crop_image_batch,#,outputs1,outputs2
                   args.num_classes,
                   False,
                   True)
