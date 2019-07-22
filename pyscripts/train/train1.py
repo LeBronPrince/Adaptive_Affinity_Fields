@@ -18,7 +18,7 @@ from seg_models.models.pspnet import pspnet_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import network.common.layers as nn
 import general
-os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
 
 
@@ -32,9 +32,9 @@ def get_arguments():
   # Data parameters
   parser.add_argument('--batch-size', type=int, default=4,
 	             help='Number of images in one step.')
-  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/',
+  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/potsdam/Split/',
  	             help='/path/to/dataset/.')#/media/f523/7cf72e9a-af1d-418e-b1f1-94d2a5e0f0d5/f523/wangyang/Vaihingen/Split
-  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_train.txt',
+  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/potsdam/potsdam_train.txt',
 	             help='/path/to/datalist/file.')
   parser.add_argument('--ignore-label', type=int, default=255,
 	             help='The index of the label to ignore.')
@@ -57,7 +57,7 @@ def get_arguments():
 	             help='Regularisation parameter for L2-loss.')
   parser.add_argument('--num-classes', type=int, default=6,
 	             help='Number of classes to predict.')
-  parser.add_argument('--num-steps', type=int, default=7001,
+  parser.add_argument('--num-steps', type=int, default=13001,
 	             help='Number of training steps.')
   parser.add_argument('--iter-size', type=int, default=10,
 	             help='Number of iteration to update weights')
@@ -80,7 +80,7 @@ def get_arguments():
 	             help='Save summaries and checkpoint every often.')
   parser.add_argument('--update-tb-every', type=int, default=20,
 	             help='Update summaries every often.')
-  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_psp',
+  parser.add_argument('--snapshot-dir', type=str, default='/home/f523/guazai/sda/wangyang/segmentation/snapshot_psp_pos',
 	             help='Where to save snapshots of the model.')
   parser.add_argument('--not-restore-classifier', action='store_true',
 	             help='Whether to not restore classifier layers.')

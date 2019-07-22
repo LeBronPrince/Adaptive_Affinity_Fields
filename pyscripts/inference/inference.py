@@ -16,8 +16,8 @@ sys.path.append("/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/utils
 #from seg_models.models.pspnet_v2_1 import pspnet_v2_resnet101 as model
 #from seg_models.models.pspnet_v2_3 import pspnet_v2_resnet101 as model
 #from seg_models.models.fcn import fcn8s_resnet101 as model
-from seg_models.models.pspnet_v2_9 import pspnet_v2_resnet101 as model
-#from seg_models.models.pspnet import pspnet_resnet101 as model
+#from seg_models.models.pspnet_v2_9 import pspnet_v2_resnet101 as model
+from seg_models.models.pspnet import pspnet_resnet101 as model
 from seg_models.image_reader1 import ImageReader
 import general
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -44,9 +44,9 @@ def get_arguments():
                       help='Number of classes to predict.')
   parser.add_argument('--ignore-label', type=int, default=255,
                       help='Index of label to ignore.')#/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_v9/model.ckpt-6500
-  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_potsdam_v9/model.ckpt-12000',
+  parser.add_argument('--restore-from', type=str, default='/home/f523/guazai/sda/wangyang/segmentation/snapshot_psp_pos/model.ckpt-10000',
                       help='Where restore model parameters from.')
-  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_potsdam_v9',
+  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_pos_psp',
                       help='/path/to/save/predictions.')
   parser.add_argument('--colormap', type=str, default=None,
                       help='/path/to/colormap/file.')
@@ -112,7 +112,7 @@ def main():
       dtype=tf.float32)
 
   # Create network and output prediction.
-  outputs,outputs1,outputs2 = model(crop_image_batch,#,outputs1,outputs2
+  outputs = model(crop_image_batch,#,outputs1,outputs2
                   args.num_classes,
                   False,
                   True)

@@ -16,7 +16,7 @@ import cv2
 
 training_set = [1, 3, 5, 7, 13, 17, 21, 23, 26, 32, 37] # VH training index
 #test_set = [11, 15, 28, 30, 34] # VH test index
-test_set = [15]
+test_set = [30]
 
 def x_calc_lucorners(im, patch_size, overlap_size=[0, 0]):
     '''
@@ -225,7 +225,7 @@ def xf_VH_test_split(ps, overlap):
     for idx in test_set:
         # split and augmentation of the RGB data
         folder_root = "/home/wangyang/Desktop/dataset/Vaihingen/ISPRS_semantic_labeling_Vaihingen/top/"
-        t_rgb_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/15/original/256/"
+        t_rgb_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/301/original/"
         fname = folder_root + 'top_mosaic_09cm_area' + str(idx) + '.tif'
         im = Image.open(fname)
         l_corners = x_calc_lucorners1(im, patch_size, overlap_size=overlap_size)
@@ -233,7 +233,7 @@ def xf_VH_test_split(ps, overlap):
         x_image_split_no_aug(l_corners, patch_size, im, root_name)
 
         folder_root = "/home/wangyang/Desktop/dataset/Vaihingen/ISPRS_semantic_labeling_Vaihingen_ground_truth_COMPLETE/"
-        t_tag_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/15/label/256/"
+        t_tag_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/301/label/"
         fname = folder_root + 'top_mosaic_09cm_area' + str(idx) + '.tif'
         im = Image.open(fname)
         l_corners = x_calc_lucorners1(im, patch_size, overlap_size=overlap_size)
@@ -241,7 +241,7 @@ def xf_VH_test_split(ps, overlap):
         x_image_split_no_aug(l_corners, patch_size, im, root_name)
 
         folder_root = "/home/wangyang/Desktop/dataset/Vaihingen/ISPRS_semantic_labeling_Vaihingen/ndsm/"
-        t_tag_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/15/ndsm/256/"
+        t_tag_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/301/ndsm/"
         fname = folder_root + 'dsm_09cm_matching_area' + str(idx) + '_normalized.jpg'#dsm_09cm_matching_area3_normalized
         im = Image.open(fname)
         l_corners = x_calc_lucorners1(im, patch_size, overlap_size=overlap_size)
@@ -249,7 +249,7 @@ def xf_VH_test_split(ps, overlap):
         x_image_split_no_aug(l_corners, patch_size, im, root_name)
 
         folder_root = "/home/wangyang/Desktop/dataset/Vaihingen/label_train/"
-        t_tag_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/15/tag/256/"
+        t_tag_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/301/tag/"
         fname = folder_root + 'top_mosaic_09cm_area' + str(idx) + '.png'#dsm_09cm_matching_area3_normalized
         im = Image.open(fname)
         l_corners = x_calc_lucorners1(im, patch_size, overlap_size=overlap_size)
@@ -258,7 +258,7 @@ def xf_VH_test_split(ps, overlap):
 
 def xh_test():
     # define the roots
-    patch_size = [256, 256]
+    patch_size = [1024, 1024]
     overlap = [0, 0]#0.297
     # xf_VH_test_split(patch_size, overlap)
     xf_VH_test_split(patch_size, overlap)

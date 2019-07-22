@@ -11,9 +11,9 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 parser = argparse.ArgumentParser(
   description='Benchmark segmentation predictions'
 )
-parser.add_argument('--pred-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_fcn/gray',
+parser.add_argument('--pred-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_pos_psp/gray',
                     help='/path/to/prediction.')
-parser.add_argument('--gt-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/test/label_test',
+parser.add_argument('--gt-dir', type=str, default='/home/f523/wangyang/segmentation/potsdam/Split/test/label_test',
                     help='/path/to/ground-truths')
 parser.add_argument('--num-classes', type=int, default=6,
                     help='number of segmentation classes')
@@ -40,7 +40,7 @@ for dirpath, dirnames, filenames in os.walk(args.pred_dir):
     gt = np.array(
         Image.open(gtname),
         dtype=np.uint8)
-    #gt = gt[:,:,0]
+    gt = gt[:,:,0]
     _tp_fn, _tp_fp, _tp = iou_stats(
         pred,
         gt,
