@@ -21,6 +21,7 @@ import network.common.layers as nn
 import general
 os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
+ndsm_MEAN = 30.7
 
 
 def get_arguments():
@@ -33,9 +34,9 @@ def get_arguments():
   # Data parameters
   parser.add_argument('--batch-size', type=int, default=4,
 	             help='Number of images in one step.')
-  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/potsdam/Split/',
+  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/',
  	             help='/path/to/dataset/.')#/media/f523/7cf72e9a-af1d-418e-b1f1-94d2a5e0f0d5/f523/wangyang/potsdam/Split
-  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/potsdam/potsdam_train.txt',
+  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_train.txt',
 	             help='/path/to/datalist/file.')
   parser.add_argument('--ignore-label', type=int, default=255,
 	             help='The index of the label to ignore.')

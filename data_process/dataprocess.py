@@ -179,7 +179,14 @@ def xf_VH_train_split(ps, overlap):
 
     for idx in training_set:
         # split and augmentation of the RGB data
-
+        folder_root = "/home/f523/wangyang/segmentation/Vaihingen/ISPRS_semantic_labeling_Vaihingen/ndsm_hist/"
+        t_rgb_folder = "/home/f523/wangyang/segmentation/Vaihingen/Split/ndsm_hist/"
+        fname = folder_root + 'dsm_09cm_matching_area' + str(idx) + '_normalized.jpg'
+        im = Image.open(fname)
+        l_corners = x_calc_lucorners(im, patch_size, overlap_size=overlap_size)
+        root_name = t_rgb_folder + 'VH_' + str(idx).zfill(2) + '_'
+        x_image_split(l_corners, patch_size, im, root_name)
+        """
         folder_root = "/home/wangyang/Desktop/dataset/Vaihingen/ISPRS_semantic_labeling_Vaihingen/top/"
         t_rgb_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/original/"
         fname = folder_root + 'top_mosaic_09cm_area' + str(idx) + '.tif'
@@ -205,6 +212,7 @@ def xf_VH_train_split(ps, overlap):
         root_name = t_tag_folder + 'VH_' + str(idx).zfill(2) + '_'
         x_image_split(l_corners, patch_size, im, root_name)
         # split and augmentation of the no-boarder tag data
+        """
 def xf_VH_test_split(ps, overlap):
     '''
     Split the VH dataset with spcified patch_size;
@@ -223,6 +231,14 @@ def xf_VH_test_split(ps, overlap):
 
     for idx in test_set:
         # split and augmentation of the RGB data
+        folder_root = "/home/f523/wangyang/segmentation/Vaihingen/ISPRS_semantic_labeling_Vaihingen/ndsm_hist/"
+        t_rgb_folder = "/home/f523/wangyang/segmentation/Vaihingen/Split/test/ndsm_hist/"
+        fname = folder_root + 'dsm_09cm_matching_area' + str(idx) + '_normalized.jpg'
+        im = Image.open(fname)
+        l_corners = x_calc_lucorners(im, patch_size, overlap_size=overlap_size)
+        root_name = t_rgb_folder + 'VH_' + str(idx).zfill(2) + '_'
+        x_image_split_no_aug(l_corners, patch_size, im, root_name)
+        """
         folder_root = "/home/wangyang/Desktop/dataset/Vaihingen/ISPRS_semantic_labeling_Vaihingen/top/"
         t_rgb_folder = "/home/wangyang/Desktop/dataset/Vaihingen/Split/test/original/"
         fname = folder_root + 'top_mosaic_09cm_area' + str(idx) + '.tif'
@@ -247,6 +263,7 @@ def xf_VH_test_split(ps, overlap):
         root_name = t_tag_folder + 'VH_' + str(idx).zfill(2) + '_'
         x_image_split_no_aug(l_corners, patch_size, im, root_name)
         # split and augmentation of the no-boarder tag data
+        """
 """
 
 def xf_VH_test_split(ps, overlap):
@@ -311,7 +328,7 @@ def xh_test():
     # define the roots
     patch_size = [336, 336]
     overlap = [0.297, 0.297]#0.297
-    # xf_VH_test_split(patch_size, overlap)
+    #xf_VH_train_split(patch_size, overlap)
     xf_VH_test_split(patch_size, overlap)
 
 

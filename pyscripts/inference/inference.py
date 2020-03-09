@@ -31,10 +31,10 @@ def get_arguments():
     A list of parsed arguments.
   """
   parser = argparse.ArgumentParser(
-      description='Inference for Semantic Segmentation')
-  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/potsdam/Split/test/',
-                      help='/path/to/dataset.')
-  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/potsdam/potsdam_test.txt',
+      description='Inference for Semantic Segmentation')#/home/f523/wangyang/segmentation/potsdam/Split/test/
+  parser.add_argument('--data-dir', type=str, default='/home/f523/wangyang/segmentation/Vaihingen/Split/test/',
+                      help='/path/to/dataset.')#/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/potsdam/potsdam_test.txt
+  parser.add_argument('--data-list', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/dataset/Vaihingen/Vaihingen_test.txt',
                       help='/path/to/datalist/file.')
   parser.add_argument('--input-size', type=str, default='336,336',
                       help='Comma-separated string with H and W of image.')
@@ -44,9 +44,9 @@ def get_arguments():
                       help='Number of classes to predict.')
   parser.add_argument('--ignore-label', type=int, default=255,
                       help='Index of label to ignore.')#/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_v9/model.ckpt-6500
-  parser.add_argument('--restore-from', type=str, default='/home/f523/guazai/sda/wangyang/segmentation/snapshot_psp_pos/model.ckpt-10000',
-                      help='Where restore model parameters from.')
-  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_pos_psp',
+  parser.add_argument('--restore-from', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/snapshot/snapshot_psp/model.ckpt-6500',
+                      help='Where restore model parameters from.')#'/home/f523/guazai/sda/wangyang/segmentation/snapshot_psp_pos/model.ckpt-10000'
+  parser.add_argument('--save-dir', type=str, default='/home/f523/wangyang/segmentation/Adaptive_Affinity_Fields/inference/inference_temp',
                       help='/path/to/save/predictions.')
   parser.add_argument('--colormap', type=str, default=None,
                       help='/path/to/colormap/file.')

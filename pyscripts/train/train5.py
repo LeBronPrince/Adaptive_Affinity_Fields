@@ -221,15 +221,15 @@ def main():
     output_2d = tf.reshape(output, [-1, args.num_classes])
     output_gather = tf.gather(output_2d, pixel_inds)
     #loss,inter_class_loss = loss_total(output_gather,labels_gather)
-    #loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=output_gather, labels=labels_gather)
-    loss = focal_loss(labels_gather, output_gather, gamma=2, scope="focal")
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=output_gather, labels=labels_gather)
+    #loss = focal_loss(labels_gather, output_gather, gamma=2, scope="focal")
     seg_losses.append(loss)
   for i,output1 in enumerate(outputs1):
     output_2d1 = tf.reshape(output1, [-1, args.num_classes])
     output_gather1 = tf.gather(output_2d1, pixel_inds1)
     #loss,inter_class_loss = loss_total(output_gather,labels_gather)
-    #loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=output_gather1, labels=labels_gather1)
-    loss = focal_loss(labels_gather1, output_gather1, gamma=2, scope="focal1")
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=output_gather1, labels=labels_gather1)
+    #loss = focal_loss(labels_gather1, output_gather1, gamma=2, scope="focal1")
     seg_losses1.append(loss)
 
 
